@@ -1,13 +1,20 @@
 import base64
 from http import HTTPStatus
-import os
 import sqlite3
 from aiohttp import web
 import validators
 import requests
 
+app = web.Application();
 routes = web.RouteTableDef();
 API_URL = 'http://127.0.0.1:8000';
+
+app.add_routes(routes);
+
+
+connection = sqlite3.connect("urlshortener.db");
+cursor = connection.cursor();
+cursor.execute("CREATE TABLE IF NOT EXISTS URLSHORTENER (id INTEGER PRIMARY KEY AUTOINCREMENT, longurl TEXT, shorturl TEXT, code TEXT unique)")
 
 BASE62_ALPHABET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
 
@@ -92,10 +99,6 @@ async def redirect_to_long_url(request):
         return web.Response(text="URL not found", status=404)
 
 if __name__ == "__main__":
-    connection = sqlite3.connect("urlshortener.db");
-    cursor = connection.cursor();
-    cursor.execute("CREATE TABLE IF NOT EXISTS URLSHORTENER (id INTEGER PRIMARY KEY AUTOINCREMENT, longurl TEXT, shorturl TEXT, code TEXT unique)")
-    app = web.Application();
-    app.add_routes(routes);
+    import os
     port = int(os.environ.get("PORT", 8000));
     web.run_app(app, host="0.0.0.0", port=port);
