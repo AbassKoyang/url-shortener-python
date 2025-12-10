@@ -7,7 +7,7 @@ import requests
 
 app = web.Application();
 routes = web.RouteTableDef();
-API_URL = 'http://127.0.0.1:8000';
+API_URL = 'https://url-shortener-python-izra.onrender.com';
 
 app.add_routes(routes);
 
